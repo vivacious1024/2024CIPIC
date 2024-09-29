@@ -1,0 +1,26 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "author": "JiJi <i@mmdjiji.com>",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "echarts": "^5.4.0",
+    "ml-convolution": "^2.0.0",
+    "screenfull": "^6.0.2",
+    "vue": "^3.2.41",
+    "vue-router": "^4.1.5",
+    "vue3-video-play": "^1.3.1-beta.6"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^3.1.2",
+    "naive-ui": "^2.33.5",
+    "unplugin-auto-import": "^0.11.4",
+    "unplugin-vue-components": "^0.22.9",
+    "vfonts": "^0.0.3",
+    "vite": "^3.1.8"
+  }
+}

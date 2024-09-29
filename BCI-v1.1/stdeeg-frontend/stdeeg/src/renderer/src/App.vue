@@ -1,0 +1,76 @@
+<template>
+  <router-view></router-view>
+</template>
+
+<script>
+export default {
+  name: 'App',
+  created() {
+    window.addEventListener("keyup", this.keyUp, false);
+  },
+  methods: {
+    keyUp(e) {
+      if(e.code === 'F1') {
+        if(this.$router.currentRoute.value.path === '/') {
+          this.$router.push('/about');
+        } else if(this.$router.currentRoute.value.path === '/about') {
+          this.$router.push('/');
+        }
+      }
+    },
+  }
+}
+</script>
+<style>
+
+code {
+  font-weight: 600;
+  padding: 3px 5px;
+  border-radius: 2px;
+  background-color: #26282e;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    SF Mono,
+    Menlo,
+    Consolas,
+    Liberation Mono,
+    monospace;
+  font-size: 85%;
+}
+a {
+  color: #9feaf9;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  outline: none;
+}
+a:hover {
+  border-bottom: 1px solid;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  font-family:
+    Roboto,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Helvetica Neue',
+    'Segoe UI',
+    'Oxygen',
+    'Ubuntu',
+    'Cantarell',
+    'Open Sans',
+    sans-serif;
+  color: #86a5b1;
+  background-color: #2f3241;
+}
+#app {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: 840px;
+  margin: 0 auto;
+  padding: 15px 30px 0 30px;
+}
+</style>
