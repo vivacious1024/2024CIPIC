@@ -16,7 +16,7 @@ stdeeg-backend是项目后端，使用django，负责管理用户信息以及启
 
 ### 前端stdeeg-frontend
 
-``npm install`` 安装依赖
+``npm install`` 安装依赖(如果有问题可以试试先更新npm：`npm install -g npm@latest`再使用install)
 
 ``npm run dev``开发模式启动项目
 
@@ -26,7 +26,9 @@ SA_backend/settings.py中DATABASES请按照本地数据库设置更改
 
 ``python -m venv venv``创建虚拟环境
 
-``.\venv\Scripts\activate``激活
+
+``.\venv\Scripts\activate``激活(可能会遇到执行策略问题，可通过以管理员身份运行windows powershell更改执行策略：查看当前策略：`Get-ExecutionPolicy`，更改策略：`Set-ExecutionPolicy RemoteSigned`)(使用`deactivate`关闭虚拟环境)
+
 
 ``pip install -r requirements.txt``安装依赖
 
@@ -48,7 +50,7 @@ SA_backend/settings.py中DATABASES请按照本地数据库设置更改
 
 ## 使用流程
 
-打开系统：在stdeeg-frontend目录下运行``npm run dev``,在stdeeg-backend目录下运行``python manage.py runserver 0.0.0.0:8000``
+打开系统：在stdeeg-frontend目录下运行``npm run dev``,在stdeeg-backend目录下激活虚拟环境(`.\venv\Scripts\activate`之后再运行``python manage.py runserver 0.0.0.0:8000``)
 
 选择被试->添加被试->返回首页->选择设备和端口进入大五人格->弹出网页后先关掉弹出来的翻译请求，没有就忽略->连接设备
 ->待下方显示连接成功（设备灯由黄变绿）后开始采集->观察范式
