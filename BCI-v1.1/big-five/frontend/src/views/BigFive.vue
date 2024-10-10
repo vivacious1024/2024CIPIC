@@ -52,7 +52,7 @@
     <p class="word" v-if="!ctx3">{{ ctx[4] }}</p>
     <p class="word" v-if="!ctx3">{{ ctx[5] }}</p>
     <!-- <p class="word">{{ ctx[6] }}</p> -->
-    <videoPlay v-if="video_playing" v-bind="video_options" @play="onVideoPlay" @ended="onVideoEnded" @pause="onVideoPause"></videoPlay>
+    <!-- <videoPlay v-if="video_playing" v-bind="video_options" @play="onVideoPlay" @ended="onVideoEnded" @pause="onVideoPause"></videoPlay>-->
   </div>
 </template>
 
@@ -60,8 +60,8 @@
 <script>
 import screenfull from 'screenfull';
 
-import "vue3-video-play/dist/style.css";
-import { videoPlay } from 'vue3-video-play';
+/*import "vue3-video-play/dist/style.css";
+import { videoPlay } from 'vue3-video-play';*/
 import { reactive } from 'vue';
 
 export default {
@@ -625,7 +625,7 @@ export default {
     document.body.setAttribute('style', 'background: #172E5A;');
   },
   components: {
-    videoPlay
+    //videoPlay
   }
 }
 </script>

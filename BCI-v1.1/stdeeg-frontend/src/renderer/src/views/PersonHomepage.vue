@@ -7,16 +7,15 @@
       <div class="Info">
         <!--<el-upload
           class="avatar_upload"
-          action="#"
+          action="/api/upload-avatar"
           :show-file-list="false"
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
-          :http-request="uploadPic"
         >
           <img
             class="image-container"
             id="Photo"
-            :src="this.imageUrl"
+            :src="imageUrl"
             alt="头像"
             width="170px"
             height="170px"
@@ -124,7 +123,7 @@ export default {
       name: 'name',
       institution: 'institution',
       email: '',
-      imageUrl: '',
+      imageUrl: '',         // 头像路径
       MidNavIdx: '1',
       Menu1Idx: '1',
       Menu4Idx: '1',
@@ -213,7 +212,14 @@ export default {
       this.email = ''
     },
     handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
+      // 假设响应中包含头像的 URL
+      this.imageUrl = response.data.url;  // 根据响应格式调整
+      // 这里可以添加其他逻辑，比如显示成功提示
+      this.$notify({
+        title: '成功',
+        message: '头像上传成功',
+        type: 'success'
+      });
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg'
