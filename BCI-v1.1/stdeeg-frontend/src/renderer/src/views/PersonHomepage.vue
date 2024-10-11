@@ -8,10 +8,14 @@
 
         <el-upload
           class="avatar_upload"
-          action="http://localhost:8000/upload_avatar"
+          action="http://localhost:8000/api/user/upload_avatar"
           :show-file-list="false"
+          :headers="{
+            'Authorization': 'Token ' + this.token
+          }"
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
+          name="photo" 
         >
           <img
             class="image-container"
@@ -96,6 +100,7 @@ export default {
       this.$router.push('/login')
     }
     getInformation(this.token).then((res) => {
+      console.log(res);
       if (res.data.result === 0) {
         if (res.data.id === parseInt(this.$route.params.id)) {
           this.isSelf = true
@@ -106,7 +111,14 @@ export default {
         console.log(this.isSelf)
         this.email = res.data.email
         this.username = res.data.username
-        this.imageUrl = res.data.photo_url_out
+        if (res.data.photo_url) {
+          // 去掉多余的 "media" 词
+          const cleanedUrl = res.data.photo_url.replace(/\/media\/media\//, '/media/');
+          this.imageUrl = `http://localhost:8000${cleanedUrl}`;
+        } else {
+          this.imageUrl = 'default_avatar.png'; // 使用默认头像
+        }
+
       } else {
         this.$notify({
           title: '错误',
@@ -216,33 +228,51 @@ export default {
     },
     handleAvatarSuccess(res, file) {
       console.log(res); // 打印响应查看
-      // 检查响应中是否包含头像的 URL
-      if (res.data && res.data.url) {
-        this.imageUrl = res.data.url; // 根据响应格式调整
-        console.log(this.imageUrl); // 打印出选择的图片的 URL
+      // 根据后端返回的格式调整
+      if (res.result === 0) { // 假设返回的结果中有 result 属性
+        // 确保 res.data 存在且包含 photo_url
+        const photoUrl = res.photo_url; // 使用可选链
+        if (photoUrl) {
+          const cleanedUrl = photoUrl.replace(/\/media\/media\//, '/media/');
+          this.imageUrl = `http://localhost:8000${cleanedUrl}`; // 拼接完整的 URL
+          console.log(this.imageUrl); // 打印出选择的图片的 URL
+          this.$notify({
+              title: '成功',
+              message: '头像上传成功',
+              type: 'success'
+          });
+        } else {
+          console.error('未能获取图片 URL');
+          this.$notify({
+              title: '失败',
+              message: '头像上传失败，未能获取图片 URL。',
+              type: 'error'
+          });
+        }
       } else {
-        console.error('未能获取图片 URL');
+        console.error('上传失败:', res);
+        this.$notify({
+            title: '失败',
+            message: '头像上传失败，返回结果不正确。',
+            type: 'error'
+        });
       }
-  
-      // 这里可以添加其他逻辑，比如显示成功提示
-      this.$notify({
-        title: '成功',
-        message: '头像上传成功',
-        type: 'success'
-      });
     },
     beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isLt2M = file.size / 1024 / 1024 < 2
+      const isJPG = file.type === 'image/jpeg';
+      const isPNG = file.type === 'image/png';
+      const isImage = isJPG || isPNG;
 
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!')
+      if (!isImage) {
+        this.$message.error('上传头像图片只能是 JPG 或 PNG 格式!');
       }
+      const isLt2M = file.size / 1024 / 1024 < 2; // 限制大小为 2MB
       if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
+        this.$message.error('上传头像图片大小不能超过 2MB!');
       }
-      return isJPG && isLt2M
+      return isImage && isLt2M;
     }
+
   }
 }
 </script>

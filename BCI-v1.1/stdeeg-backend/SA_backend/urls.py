@@ -19,6 +19,8 @@ from django.urls import path, include
 from django.contrib import admin
 from django.urls import path
 
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     # path('', index),
@@ -33,3 +35,6 @@ urlpatterns = [
 
     path('admin/', admin.site.urls),
 ]
+# 添加媒体文件的 URL 路由
+if settings.DEBUG:  # 仅在开发模式下服务媒体文件
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

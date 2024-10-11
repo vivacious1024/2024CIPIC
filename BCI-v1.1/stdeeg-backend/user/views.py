@@ -1,3 +1,6 @@
+from django.conf import settings
+
+
 import os
 import random
 
@@ -52,14 +55,16 @@ def get_all_usernames(request):
     return JsonResponse(result)
 
 
+from django.core.files.storage import FileSystemStorage
+
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def upload_avatar(request):
     user = request.user
-    avatar = request.FILES.get('avatar')
+    avatar = request.FILES.get('photo')
 
-    if not avatar:  # 如果没有上传头像文件
+    if not avatar:
         return JsonResponse({'result': 1, 'message': '请上传头像文件'}, status=400)
 
     # 文件类型验证
@@ -68,26 +73,22 @@ def upload_avatar(request):
     if ext.lower() not in valid_extensions:
         return JsonResponse({'result': 1, 'message': '无效的文件类型，支持的类型: jpg, jpeg, png, gif'}, status=400)
 
-    # 文件大小限制（例如：5MB）
+    # 文件大小限制
     if avatar.size > 5 * 1024 * 1024:
         return JsonResponse({'result': 1, 'message': '文件大小不能超过5MB'}, status=400)
 
-    # 生成头像文件的保存路径
-    avatar_path = os.path.join(BASE_DIR, 'avatar', f'{user.id}_avatar{ext}')
-
-    # 保存头像文件到指定路径
-    with open(avatar_path, 'wb+') as file:
-        for chunk in avatar.chunks():
-            file.write(chunk)
+    # 使用 Django 的文件存储
+    fs = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'avatars'))
+    filename = fs.save(f'{user.id}_avatar{ext}', avatar)
+    
+    # 手动构建 URL
+    avatar_url = f'/media/avatars/{filename}'
 
     # 更新用户的头像路径
-    user.photo_url = avatar_path
-    user.photo_url_out = 'https://sa.leonardsaikou.top/avatar/' + f'{user.id}_avatar{ext}'
+    user.photo = avatar_url  # 假设你的 User 模型有一个 'photo' 字段
     user.save()
 
-    return JsonResponse({'result': 0, 'message': '上传成功', 'photo_url': user.photo_url_out})
-
-
+    return JsonResponse({'result': 0, 'message': '上传成功', 'photo_url': avatar_url})
 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
@@ -146,7 +147,7 @@ def get_self_information(request):
                 'is_staff': user.is_staff,
                 'is_active': user.is_active,
                 'date_joined': user.date_joined,
-                'photo_url': user.photo_url,
+                'photo_url': user.photo.url if user.photo else None,
                 'is_login': user.is_login,
                 'is_admin': user.is_admin,
                 'result': 0,
@@ -195,7 +196,7 @@ def get_specific_information(request):
                 'is_staff': user.is_staff,
                 'is_active': user.is_active,
                 'date_joined': user.date_joined,
-                'photo_url': user.photo_url,
+                'photo_url': user.photo.url if user.photo else None,
                 'is_login': user.is_login,
                 'is_admin': user.is_admin,
                 'is_author': user.is_author,

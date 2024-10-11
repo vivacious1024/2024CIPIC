@@ -46,10 +46,11 @@ INSTALLED_APPS = [
     # 'django_elasticsearch_dsl',
     # 'django_elasticsearch_dsl_drf',
     'rest_framework.authtoken',
-    
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # 这是最上面
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
@@ -58,6 +59,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # 将此替换为你的前端地址
+]
+
 
 ROOT_URLCONF = 'SA_backend.urls'
 
@@ -142,3 +148,11 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ),
 }
+
+# MEDIA_URL 是用于访问媒体文件的 URL
+MEDIA_URL = '/media/'
+
+# MEDIA_ROOT 是文件存储的绝对路径
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+DEBUG = True
