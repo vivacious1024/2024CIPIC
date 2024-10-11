@@ -59,22 +59,34 @@ def upload_avatar(request):
     user = request.user
     avatar = request.FILES.get('avatar')
 
-    if avatar:  # 如果上传了头像文件
-        # 生成头像文件的保存路径
-        _, ext = os.path.splitext(avatar.name)
-        avatar_path = os.path.join(BASE_DIR, 'avatar', f'{user.id}_avatar.png')
+    if not avatar:  # 如果没有上传头像文件
+        return JsonResponse({'result': 1, 'message': '请上传头像文件'}, status=400)
 
-        # 保存头像文件到指定路径
-        with open(avatar_path, 'wb') as file:
-            for chunk in avatar.chunks():
-                file.write(chunk)
+    # 文件类型验证
+    valid_extensions = ['.jpg', '.jpeg', '.png', '.gif']
+    _, ext = os.path.splitext(avatar.name)
+    if ext.lower() not in valid_extensions:
+        return JsonResponse({'result': 1, 'message': '无效的文件类型，支持的类型: jpg, jpeg, png, gif'}, status=400)
 
-        # 更新用户的头像路径
-        user.photo_url = avatar_path
-        user.photo_url_out = 'https://sa.leonardsaikou.top/avatar/' + f'{user.id}_avatar.png'
-        user.save()
-        result = {'result': 0, 'report': r'上传成功'}
-        return JsonResponse(result)
+    # 文件大小限制（例如：5MB）
+    if avatar.size > 5 * 1024 * 1024:
+        return JsonResponse({'result': 1, 'message': '文件大小不能超过5MB'}, status=400)
+
+    # 生成头像文件的保存路径
+    avatar_path = os.path.join(BASE_DIR, 'avatar', f'{user.id}_avatar{ext}')
+
+    # 保存头像文件到指定路径
+    with open(avatar_path, 'wb+') as file:
+        for chunk in avatar.chunks():
+            file.write(chunk)
+
+    # 更新用户的头像路径
+    user.photo_url = avatar_path
+    user.photo_url_out = 'https://sa.leonardsaikou.top/avatar/' + f'{user.id}_avatar{ext}'
+    user.save()
+
+    return JsonResponse({'result': 0, 'message': '上传成功', 'photo_url': user.photo_url_out})
+
 
 
 @api_view(['POST'])

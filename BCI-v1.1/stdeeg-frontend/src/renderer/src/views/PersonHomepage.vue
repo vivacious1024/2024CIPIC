@@ -5,9 +5,10 @@
     </div>
     <div class="phpContainer">
       <div class="Info">
-        <!--<el-upload
+
+        <el-upload
           class="avatar_upload"
-          action="/api/upload-avatar"
+          action="http://localhost:8000/upload_avatar"
           :show-file-list="false"
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
@@ -16,12 +17,14 @@
             class="image-container"
             id="Photo"
             :src="imageUrl"
-            alt="头像"
+            alt="更改头像"
             width="170px"
             height="170px"
           />
           <div class="image-black-cover"><i class="el-icon-plus"></i></div>
-        </el-upload>-->
+        </el-upload>
+
+
         <div class="PersonalInfo">
           <p style="font-size: 20px; color: black; font-weight: bold">
             用户名：{{ username }}
@@ -212,8 +215,15 @@ export default {
       this.email = ''
     },
     handleAvatarSuccess(res, file) {
-      // 假设响应中包含头像的 URL
-      this.imageUrl = response.data.url;  // 根据响应格式调整
+      console.log(res); // 打印响应查看
+      // 检查响应中是否包含头像的 URL
+      if (res.data && res.data.url) {
+        this.imageUrl = res.data.url; // 根据响应格式调整
+        console.log(this.imageUrl); // 打印出选择的图片的 URL
+      } else {
+        console.error('未能获取图片 URL');
+      }
+  
       // 这里可以添加其他逻辑，比如显示成功提示
       this.$notify({
         title: '成功',
@@ -250,12 +260,12 @@ export default {
   overflow-y: auto;
 }
 
-.Info {
+/*.Info {
   width: 100%;
   background: #e5f0fa;
-}
+}*/
 
-.Info .avatar_upload {
+/*.Info .avatar_upload {
   width: 10%;
   height: 65%;
   float: left;
@@ -265,6 +275,21 @@ export default {
   border-radius: 4px;
   margin-right: 2%;
 }
+*/
+.Info {
+  display: flex; /* 使用 Flexbox */
+  align-items: center; /* 垂直居中 */
+  background: #e5f0fa;
+  padding: 20px; /* 添加内边距 */
+}
+
+.Info .avatar_upload {
+  width: 170px; /* 固定宽度 */
+  height: 170px; /* 固定高度 */
+  margin-right: 20px; /* 增加间距 */
+}
+
+
 
 .Info .avatar_upload .image-container {
   position: relative;
@@ -302,7 +327,7 @@ export default {
   top: 70px;
 }
 
-.Info .PersonalInfo {
+/*.Info .PersonalInfo {
   height: 65%;
   float: left;
   position: relative;
@@ -310,7 +335,13 @@ export default {
   left: 11%;
   text-align: left;
   line-height: 250%;
+}*/
+.Info .PersonalInfo {
+  flex: 1; /* 使个人信息区域占满剩余空间 */
+  text-align: left; /* 左对齐文本 */
+  line-height: 1.5; /* 调整行高 */
 }
+
 
 .Info .PersonalInfo .info_dialog .el_dialog__body {
   background-color: #00b1fd;

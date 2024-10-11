@@ -73,8 +73,8 @@ router.post('/event', (req, res) => {
   const token = req.query?.token;
   //console.log(req.body);
   if(open) {
-    // fs.appendFileSync(`${saveurl}/data/${token}/log.txt`, ((new Date().getTime().toString()) + ',' + req.body?.event + '\n'));
-    fs.appendFileSync(`${saveurl}/data/${token}/log.txt`, (new Date().toISOString() + ',' + req.body?.event + '\n'));
+    fs.appendFileSync(`${saveurl}/data/${token}/log.txt`, ((new Date().getTime().toString()) + ',' + req.body?.event + '\n'));
+    //fs.appendFileSync(`${saveurl}/data/${token}/log.txt`, (new Date().toISOString() + ',' + req.body?.event + '\n'));
   }
   res.send(JSON.stringify({ code: 200 }));
 });
